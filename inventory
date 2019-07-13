@@ -1,0 +1,2 @@
+[all]
+lvm-test ansible_host=192.168.0.65 ansible_user=root ansible_password=secret

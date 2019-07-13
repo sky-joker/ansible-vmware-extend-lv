@@ -1,0 +1,28 @@
+# guest lvm parameters.
+vg_name: centos
+lv_name: root
+lv_block_device_path: /dev/centos/root
+fstype: xfs
+existing_pv_path:
+  - /dev/sda2
+
+# vm disk parameters.
+vm_disk:
+  - controller_key: 1000
+    size_mb: 16000
+    type: thin
+    datastore: VM
+    scsi_controller: 0
+    scsi_type: paravirtual
+    state: present
+    device_path: /dev/sdb
+    disk_partition_number: 1
+  - controller_key: 1000
+    size_mb: 16000
+    type: thin
+    datastore: VM
+    scsi_controller: 0
+    scsi_type: paravirtual
+    state: present
+    device_path: /dev/sdc
+    disk_partition_number: 1

@@ -1,0 +1,50 @@
+---
+- name: Add disk to vm and extend logical volume
+  hosts: all
+  gather_facts: no
+  become: yes
+  vars_files:
+    - vars/vmware_parameters.yml
+    - vars/vm_disk_parameters.yml
+  tasks:
+    - name: VMware guest disk operation.
+      include_tasks: vmware_guest_disk_operation.yml
+      loop: "{{ vm_disk }}"
+      loop_control:
+        loop_var: disk_var
+
+    - name: Create of disk partition.
+      parted:
+        device: "{{ item.device_path }}"
+        number: "{{ item.disk_partition_number }}"
+        flags:
+          - lvm
+        state: present
+      loop: "{{ vm_disk }}"
+
+    - name: Initialize an empty list for pvs.
+      set_fact:
+        pvs: []
+
+    - name: Append pv path to pvs list.
+      set_fact:
+        pvs: "{{ pvs + [ item.device_path + item.disk_partition_number | string  ] }}"
+      loop: "{{ vm_disk }}"
+
+    - name: Extend of volume group.
+      lvg:
+        vg: "{{ vg_name }}"
+        pvs: "{{ pvs + existing_pv_path }}"
+        state: present
+
+    - name: Extend of logical volume.
+      lvol:
+        vg: "{{ vg_name }}"
+        lv: "{{ lv_name }}"
+        size: +100%FREE
+
+    - name: Resize of block device.
+      filesystem:
+        fstype: "{{ fstype }}"
+        dev: "{{ lv_block_device_path }}"
+        resizefs: yes

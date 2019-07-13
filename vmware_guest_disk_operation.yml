@@ -1,0 +1,33 @@
+- name: Gather disk facts from virtual machine using name.
+  vmware_guest_disk_facts:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    datacenter: "{{ datacenter_name }}"
+    validate_certs: no
+    name: "{{ vm_name }}"
+  delegate_to: localhost
+  register: disk_facts
+
+- name: Count disc numbers.
+  set_fact: disk_number="{{ disk_number | int + 1 }}"
+  with_dict: "{{ disk_facts.guest_disk_facts }}"
+  when: item.value.controller_key == disk_var.controller_key
+
+- name: Add disks to virtual machine using name.
+  vmware_guest_disk:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    datacenter: "{{ datacenter_name }}"
+    validate_certs: no
+    name: "{{ vm_name }}"
+    disk:
+      - size_mb: "{{ disk_var.size_mb }}"
+        type: "{{ disk_var.type }}"
+        datastore: "{{ disk_var.datastore }}"
+        scsi_controller: "{{ disk_var.scsi_controller }}"
+        unit_number: "{{ disk_number | int + 1 }}"
+        scsi_type: "{{ disk_var.scsi_type }}"
+        state: "{{ disk_var.state }}"
+  delegate_to: localhost

@@ -1,0 +1,7 @@
+# vmware parameters.
+vcenter_hostname: vCenter IP
+vcenter_username: administrator@vsphere.local
+vcenter_password: secret
+datacenter_name: DC
+disk_number: 0 # fixed parameter, do not change.
+vm_name: lvm-test
