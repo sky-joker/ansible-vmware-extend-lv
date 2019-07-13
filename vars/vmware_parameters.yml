@@ -1,3 +1,4 @@
+---
 # vmware parameters.
 vcenter_hostname: vCenter IP
 vcenter_username: administrator@vsphere.local

@@ -1,3 +1,4 @@
+---
 # guest lvm parameters.
 vg_name: centos
 lv_name: root
