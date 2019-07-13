@@ -2,7 +2,6 @@
 - name: Add disk to vm and extend logical volume
   hosts: all
   gather_facts: no
-  become: yes
   vars_files:
     - vars/vmware_parameters.yml
     - vars/vm_disk_parameters.yml
